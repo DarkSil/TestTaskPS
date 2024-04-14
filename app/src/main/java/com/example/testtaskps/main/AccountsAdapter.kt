@@ -46,7 +46,9 @@ class AccountsAdapter (
         }
 
         holder.binding.root.setOnClickListener {
-            list[position].clickListener.itemClick(position)
+            if (!list[position].isSelected) {
+                list[position].clickListener.itemClick(position)
+            }
         }
     }
 

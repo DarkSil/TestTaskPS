@@ -5,20 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.testtaskps.databinding.FragmentMainBinding
 import com.example.testtaskps.main.model.Account
 import com.example.testtaskps.main.model.Transaction
-import com.example.testtaskps.services.model.RatesData
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
 
-    @Inject lateinit var ratesData: RatesData
-
     private val binding by lazy { FragmentMainBinding.inflate(layoutInflater) }
+    private val viewModel: MainViewModel by viewModels()
+
     private val listOfTransactions = arrayListOf<Transaction>()
     private val listOfAccounts by lazy { arrayListOf<Account>() }
     private val adapterTransactions by lazy { TransactionsAdapter(listOfTransactions) }
@@ -31,7 +33,7 @@ class MainFragment : Fragment() {
             adapterAccounts.notifyItemChanged(position)
         }
 
-        //TODO Get list of transactions
+        fetchTransactions()
     }
 
     override fun onCreateView(
@@ -50,81 +52,33 @@ class MainFragment : Fragment() {
         }
         binding.recyclerAccounts.adapter = adapterAccounts
 
-        listOfAccounts.add(Account(ratesData.getBaseCurrency(), 1000.123f, clickListener, true))
-        ratesData.getMapOfRates().forEach {
-            listOfAccounts.add(Account(it.key, 0f, clickListener))
-        }
-        listOfAccounts.sortByDescending { it.amount }
-
         binding.recyclerTransactions.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerTransactions.adapter = adapterTransactions
 
-        listOfTransactions.add(Transaction(Transaction.ViewType.DATE, System.currentTimeMillis()))
-        listOfTransactions.add(Transaction(
-            Transaction.ViewType.TRANSACTION,
-            System.currentTimeMillis(),
-            Transaction.TransactionType.INCOME,
-            213.0f,
-            "USD",
-            "EUR"
-        ))
-        listOfTransactions.add(Transaction(
-            Transaction.ViewType.TRANSACTION,
-            System.currentTimeMillis(),
-            Transaction.TransactionType.OUTCOME,
-            213.0f,
-            "USD",
-            "EUR"
-        ))
-        listOfTransactions.add(Transaction(
-            Transaction.ViewType.TRANSACTION,
-            System.currentTimeMillis(),
-            Transaction.TransactionType.FAIL,
-            213.0f,
-            "USD",
-            "EUR"
-        ))
-        listOfTransactions.add(Transaction(
-            Transaction.ViewType.TRANSACTION,
-            System.currentTimeMillis(),
-            Transaction.TransactionType.FAIL,
-            213.0f,
-            "USD",
-            "EUR"
-        ))
-        listOfTransactions.add(Transaction(
-            Transaction.ViewType.TRANSACTION,
-            System.currentTimeMillis(),
-            Transaction.TransactionType.FAIL,
-            213.0f,
-            "USD",
-            "EUR"
-        ))
-        listOfTransactions.add(Transaction(
-            Transaction.ViewType.TRANSACTION,
-            System.currentTimeMillis(),
-            Transaction.TransactionType.FAIL,
-            213.0f,
-            "USD",
-            "EUR"
-        ))
-        listOfTransactions.add(Transaction(
-            Transaction.ViewType.TRANSACTION,
-            System.currentTimeMillis(),
-            Transaction.TransactionType.FAIL,
-            213.0f,
-            "USD",
-            "EUR"
-        ))
-        listOfTransactions.add(Transaction(
-            Transaction.ViewType.TRANSACTION,
-            System.currentTimeMillis(),
-            Transaction.TransactionType.FAIL,
-            213.0f,
-            "USD",
-            "EUR"
-        ))
-        adapterTransactions.notifyItemRangeInserted(0, listOfTransactions.size)
+        lifecycleScope.launch(Dispatchers.IO) {
+            viewModel.getAccounts(clickListener) {
+                launch(Dispatchers.Main) {
+                    listOfAccounts.addAll(it)
+                    adapterAccounts.notifyItemRangeInserted(0, it.size)
+
+                    fetchTransactions()
+                }
+            }
+        }
+    }
+
+    private fun fetchTransactions() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            viewModel.getTransactions(listOfAccounts.first { it.isSelected }.name) {
+                launch(Dispatchers.IO) {
+                    val size = listOfTransactions.size
+                    listOfTransactions.clear()
+                    adapterTransactions.notifyItemRangeRemoved(0, size)
+                    listOfTransactions.addAll(it)
+                    adapterTransactions.notifyItemRangeInserted(0, it.size)
+                }
+            }
+        }
     }
 
 }

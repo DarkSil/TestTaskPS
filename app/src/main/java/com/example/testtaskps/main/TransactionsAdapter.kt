@@ -9,8 +9,8 @@ import com.example.testtaskps.R
 import com.example.testtaskps.databinding.ItemDateBinding
 import com.example.testtaskps.databinding.ItemTransactionBinding
 import com.example.testtaskps.main.model.Transaction
-import java.text.SimpleDateFormat
-import java.util.Calendar
+import com.example.testtaskps.utils.DateUtil.getDate
+import com.example.testtaskps.utils.DateUtil.getDayAndMonth
 
 class TransactionsAdapter (
     private val list: List<Transaction>
@@ -62,6 +62,8 @@ class TransactionsAdapter (
                         ContextCompat.getDrawable(holder.itemView.context, R.drawable.icon_arrow_outcome)
                     )
                     holder.binding.textAmount.text = "-${item.amount.toString()} ${item.currentAccount}"
+                    holder.binding.textAmount.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.colorText))
+                    holder.binding.textStatus.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.colorText))
                 }
                 else -> {
                     holder.binding.textStatus.text =
@@ -78,20 +80,6 @@ class TransactionsAdapter (
         } else if (holder is DateViewHolder) {
             holder.binding.root.text = getDayAndMonth(item.date)
         }
-    }
-
-    private fun getDayAndMonth(millis: Long) : String {
-        val formatter = SimpleDateFormat("dd MMM")
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.timeInMillis = millis
-        return formatter.format(calendar.time)
-    }
-
-    private fun getDate(millis: Long) : String {
-        val formatter = SimpleDateFormat("dd MMM yyyy, hh:mm")
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.timeInMillis = millis
-        return formatter.format(calendar.time)
     }
 
 }

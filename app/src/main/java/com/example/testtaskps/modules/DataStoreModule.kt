@@ -19,6 +19,7 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
 
 private const val REFRESH_SERVICE = "refresh_service"
+private const val ACCOUNTS_STATE = "accounts_state"
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -26,12 +27,24 @@ object DataStoreModule {
 
     @Singleton
     @Provides
-    fun provideDataStore(@ApplicationContext appContext: Context) : DataStore<Preferences> {
+    @Qualifiers.RefreshDataStore
+    fun provideRefreshDataStore(@ApplicationContext appContext: Context) : DataStore<Preferences> {
         return PreferenceDataStoreFactory.create(
             ReplaceFileCorruptionHandler { emptyPreferences() },
             listOf(SharedPreferencesMigration(appContext, REFRESH_SERVICE)),
             CoroutineScope(Dispatchers.IO + SupervisorJob())
         ) { appContext.preferencesDataStoreFile(REFRESH_SERVICE) }
+    }
+
+    @Singleton
+    @Provides
+    @Qualifiers.AccountsDataStore
+    fun provideAccountsDataStore(@ApplicationContext appContext: Context) : DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            ReplaceFileCorruptionHandler { emptyPreferences() },
+            listOf(SharedPreferencesMigration(appContext, ACCOUNTS_STATE)),
+            CoroutineScope(Dispatchers.IO + SupervisorJob())
+        ) { appContext.preferencesDataStoreFile(ACCOUNTS_STATE) }
     }
 
 }

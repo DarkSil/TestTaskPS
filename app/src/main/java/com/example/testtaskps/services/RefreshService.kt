@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.lifecycle.MutableLiveData
+import com.example.testtaskps.modules.Qualifiers
 import com.example.testtaskps.services.model.RatesData
 import com.example.testtaskps.services.model.RatesDataImpl
 import com.example.testtaskps.services.model.RefreshApi
@@ -28,6 +29,7 @@ import javax.inject.Inject
 class RefreshService : Service() {
 
     @Inject lateinit var ratesData: RatesData
+    @Qualifiers.RefreshDataStore
     @Inject lateinit var dataStore: DataStore<Preferences>
     @Inject lateinit var refreshApi: RefreshApi
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
