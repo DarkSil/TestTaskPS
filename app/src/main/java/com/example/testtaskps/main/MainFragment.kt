@@ -65,12 +65,37 @@ class MainFragment : Fragment() {
                 }
             }
         }
+
+        binding.textTransfer.setOnClickListener {
+            lifecycleScope.launch(Dispatchers.IO) {
+                val amount = 200f
+                val from = "EUR"
+                val to = "USD"
+                viewModel.transferMoney(amount, to, from) {
+                    launch(Dispatchers.IO) {
+                        viewModel.getAccounts(clickListener) {
+                            launch(Dispatchers.Main) {
+                                val size = listOfAccounts.size
+                                listOfAccounts.clear()
+                                adapterAccounts.notifyItemRangeRemoved(0, size)
+                                listOfAccounts.addAll(it)
+                                adapterAccounts.notifyItemRangeInserted(0, it.size)
+                            }
+                        }
+                    }
+                    launch(Dispatchers.Main) {
+                        listOfTransactions.add(it)
+                        adapterTransactions.notifyItemInserted(listOfTransactions.size-1)
+                    }
+                }
+            }
+        }
     }
 
     private fun fetchTransactions() {
         lifecycleScope.launch(Dispatchers.IO) {
             viewModel.getTransactions(listOfAccounts.first { it.isSelected }.name) {
-                launch(Dispatchers.IO) {
+                launch(Dispatchers.Main) {
                     val size = listOfTransactions.size
                     listOfTransactions.clear()
                     adapterTransactions.notifyItemRangeRemoved(0, size)
