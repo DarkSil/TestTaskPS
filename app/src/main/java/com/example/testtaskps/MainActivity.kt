@@ -2,6 +2,7 @@ package com.example.testtaskps
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.testtaskps.databinding.ActivityMainBinding
@@ -11,6 +12,7 @@ import com.example.testtaskps.utils.Event
 import com.example.testtaskps.utils.ServiceUtil.launchRefreshService
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -22,6 +24,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        applyTransparentUI()
+
         setContentView(binding.root)
 
         launchRefreshService()
@@ -44,5 +48,12 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         stopService(Intent(this, RefreshService::class.java))
         super.onDestroy()
+    }
+
+    private fun applyTransparentUI() {
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        )
     }
 }
