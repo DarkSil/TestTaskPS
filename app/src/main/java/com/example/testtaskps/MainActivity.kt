@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        startService(Intent(this, RefreshService::class.java))
+
         binding.root.setOnClickListener {
             ratesData.liveData.value?.value
             startService(Intent(this, RefreshService::class.java).apply {
@@ -38,5 +40,10 @@ class MainActivity : AppCompatActivity() {
                 }
             })
         }
+    }
+
+    override fun onDestroy() {
+        stopService(Intent(this, RefreshService::class.java))
+        super.onDestroy()
     }
 }
