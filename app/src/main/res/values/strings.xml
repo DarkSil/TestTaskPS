@@ -4,4 +4,8 @@
     <string name="loading">Loading…</string>
     <string name="ooops">Ooops</string>
     <string name="ok">OK</string>
+    <string name="received">Received from {item}</string>
+    <string name="sent">Sent to {item}</string>
+    <string name="failed">Failed sent to {item}</string>
+    <string name="transactions">Transactions</string>
 </resources>

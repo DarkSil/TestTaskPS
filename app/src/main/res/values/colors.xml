@@ -7,4 +7,8 @@
     <color name="colorBackgroundContrast">@color/white</color>
     <color name="colorText">@color/white</color>
     <color name="colorTextContrast">@color/colorBackground</color>
+    <color name="colorLoadingInProgress">#33000000</color>
+    <color name="colorDivider">#33FFFFFF</color>
+    <color name="colorGreen">#62C524</color>
+    <color name="colorRed">#ED6359</color>
 </resources>

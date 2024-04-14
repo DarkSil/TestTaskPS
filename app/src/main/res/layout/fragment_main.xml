@@ -1,8 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorBackground">
 
-</LinearLayout>
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="3:2"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/textTransactions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/transactions"
+        android:textColor="@color/colorText"
+        android:fontFamily="@font/nexa_bold"
+        android:layout_marginHorizontal="30dp"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@id/viewPager"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerTransactions"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingBottom="26dp"
+        android:clipToPadding="false"
+        android:scrollbars="none"
+        tools:listitem="@layout/item_transaction"
+        tools:itemCount="20"
+        app:layout_constraintTop_toBottomOf="@id/textTransactions"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:src="@drawable/background_transparent"
+        android:importantForAccessibility="no"
+        app:layout_constraintTop_toTopOf="@id/recyclerTransactions"/>
+
+    <LinearLayout
+        android:id="@+id/progressLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorLoadingInProgress"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:indeterminateTint="@color/white"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

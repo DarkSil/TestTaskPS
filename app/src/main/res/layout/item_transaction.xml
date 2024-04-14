@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    tools:background="@color/colorBackground"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="26dp"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/imageTransaction"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/background_rounded"
+        tools:src="@drawable/icon_arrow_income"
+        android:padding="10dp"
+        android:importantForAccessibility="no"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="16dp">
+
+        <TextView
+            android:id="@+id/textStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="@string/received"
+            android:textColor="@color/colorText"
+            android:fontFamily="@font/nexa_bold"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/textDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="25 Nov 2005, 17:45"
+            android:textColor="@color/colorText"
+            android:fontFamily="@font/nexa_light"
+            android:textFontWeight="600"
+            android:textSize="14sp"
+            android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="+815 USD"
+        android:textColor="@color/colorText"
+        android:fontFamily="@font/nexa_bold"
+        android:textSize="20sp"/>
+
+</LinearLayout>
