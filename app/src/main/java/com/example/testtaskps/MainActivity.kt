@@ -8,6 +8,7 @@ import com.example.testtaskps.databinding.ActivityMainBinding
 import com.example.testtaskps.services.RefreshService
 import com.example.testtaskps.services.model.RatesData
 import com.example.testtaskps.utils.Event
+import com.example.testtaskps.utils.ServiceUtil.launchRefreshService
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -23,13 +24,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        startService(Intent(this, RefreshService::class.java))
+        launchRefreshService()
 
         binding.root.setOnClickListener {
             ratesData.liveData.value?.value
-            startService(Intent(this, RefreshService::class.java).apply {
-                putExtra(RefreshService.FORCE_REFRESH_KEY, true)
-            })
+            launchRefreshService(true)
 
             ratesData.liveData.observe(this, object: Observer<Event<Boolean>> {
                 override fun onChanged(value: Event<Boolean>) {

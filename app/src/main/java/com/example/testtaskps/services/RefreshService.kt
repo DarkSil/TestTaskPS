@@ -13,7 +13,6 @@ import androidx.lifecycle.MutableLiveData
 import com.example.testtaskps.services.model.RatesData
 import com.example.testtaskps.services.model.RatesDataImpl
 import com.example.testtaskps.services.model.RefreshApi
-import com.example.testtaskps.utils.AlertUtil.showDefaultError
 import com.example.testtaskps.utils.Event
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -77,7 +76,6 @@ class RefreshService : Service() {
             override fun onFailure(p0: Call<RatesDataImpl>, p1: Throwable) {
                 ((ratesData as RatesDataImpl).liveData as MutableLiveData<Event<Boolean>>)
                     .value = Event(false)
-                applicationContext.showDefaultError()
             }
         })
     }
