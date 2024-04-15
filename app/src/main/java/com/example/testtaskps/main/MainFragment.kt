@@ -95,10 +95,14 @@ class MainFragment : Fragment() {
                         viewModel.getAccounts(clickListener) {
                             launch(Dispatchers.Main) {
                                 val size = listOfAccounts.size
+                                val selectedPosition = listOfAccounts.indexOfFirst { it.isSelected }
                                 listOfAccounts.clear()
                                 adapterAccounts.notifyItemRangeRemoved(0, size)
                                 listOfAccounts.addAll(it)
+                                it.first { it.isSelected }.isSelected = false
+                                it[selectedPosition].isSelected = true
                                 adapterAccounts.notifyItemRangeInserted(0, it.size)
+                                binding.recyclerTransactions.smoothScrollToPosition(it.size)
                             }
                         }
                     }
