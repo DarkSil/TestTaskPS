@@ -4,6 +4,7 @@ import com.example.testtaskps.main.model.Transaction
 import com.example.testtaskps.services.model.RatesData
 import com.example.testtaskps.utils.AppDatabase
 import javax.inject.Inject
+import kotlin.math.floor
 
 class ExchangeProviderImpl @Inject constructor(
     var ratesData: RatesData,
@@ -39,7 +40,7 @@ class ExchangeProviderImpl @Inject constructor(
     }
 
     override fun calculateFee(amount: Float): Float {
-        return ((amount * FEE_PERCENT.toFloat() / 100) * 100).toInt() / 100f
+        return floor((amount * FEE_PERCENT / 100) * 100).toFloat() / 100f
     }
 
 }
