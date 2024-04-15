@@ -80,7 +80,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:text="@string/totalWithFee"
+                tools:text="@string/totalWithFee"
+                android:fontFamily="@font/nexa_light"
+                android:textColor="@color/colorTextContrast"
+                android:gravity="center"
+                android:layout_marginTop="32dp"
+                android:textFontWeight="800"/>
+
+            <TextView
+                android:id="@+id/receiveAmountText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                tools:text="@string/amount_to_receive"
                 android:fontFamily="@font/nexa_light"
                 android:textColor="@color/colorTextContrast"
                 android:gravity="center"

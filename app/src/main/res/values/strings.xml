@@ -18,4 +18,5 @@
     <string name="transferAccount">Transfer {account}</string>
     <string name="fieldNotEmty">Field must be not empty</string>
     <string name="totalWithFee">Total with fee: {amount}</string>
+    <string name="amount_to_receive">Amount to receive: {amount} {account}</string>
 </resources>

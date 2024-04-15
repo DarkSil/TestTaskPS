@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
@@ -23,6 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class TransferDialog : DialogFragment() {
@@ -77,7 +80,9 @@ class TransferDialog : DialogFragment() {
             binding.amountEditText.filters = filters.toTypedArray()
 
             val textFee = getString(R.string.totalWithFee)
+            val textReceive = getString(R.string.amount_to_receive)
             binding.totalText.text = textFee.replace("{amount}", "0 $account")
+
             binding.amountEditText.addTextChangedListener {
                 binding.amountEditText.error = null
                 val sum = binding.amountEditText.text.toString().toFloatOrNull() ?: 0f
@@ -86,6 +91,24 @@ class TransferDialog : DialogFragment() {
                     "{amount}",
                     "${sum + fee} $account"
                 )
+
+                binding.receiveAmountText.text = textReceive
+                    .replace("{amount}", calculateRecipientSum().toString())
+                    .replace("{account}", binding.spinnerCurrencies.selectedItem.toString())
+            }
+
+            binding.spinnerCurrencies.onItemSelectedListener = object : OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    binding.receiveAmountText.text = textReceive
+                        .replace("{amount}", calculateRecipientSum().toString())
+                        .replace("{account}", binding.spinnerCurrencies.selectedItem.toString())
+                }
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
 
             val list = ArrayList(ratesData.getMapOfRates().keys)
@@ -134,5 +157,14 @@ class TransferDialog : DialogFragment() {
     fun setCurrentAccount(account: String) : TransferDialog {
         this.account = account
         return this
+    }
+
+    private fun calculateRecipientSum() : Float {
+        val sum = binding.amountEditText.text.toString().toFloatOrNull() ?: 0f
+        val rateFrom = ratesData.getMapOfRates()[account]
+        val rateTo = ratesData.getMapOfRates()[binding.spinnerCurrencies.selectedItem.toString()]
+        var recipientAmount = (sum / (rateFrom ?: 0f) * (rateTo ?: 0f))
+        recipientAmount = (recipientAmount * 100).roundToInt() / 100f
+        return recipientAmount
     }
 }
