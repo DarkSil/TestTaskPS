@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.example.testtaskps.main.model.Account
 import com.example.testtaskps.main.model.Transaction
 import com.example.testtaskps.modules.Qualifiers
+import com.example.testtaskps.rules.ExchangeProviderImpl
 import com.example.testtaskps.services.model.RatesData
 import com.example.testtaskps.utils.AppDatabase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +23,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
     @Inject lateinit var dataStore: DataStore<Preferences>
     @Inject lateinit var ratesData: RatesData
     @Inject lateinit var db: AppDatabase
+    @Inject lateinit var exchangeProvider: ExchangeProviderImpl
 
     fun interface FetchCallback {
         fun fetch(list: ArrayList<Account>)
@@ -32,7 +34,12 @@ class MainViewModel @Inject constructor() : ViewModel() {
     }
 
     fun interface TransferCallback {
-        fun transfer(transaction: Transaction)
+        sealed class STATUS {
+            data class FAILED(val balance: Float) : STATUS()
+            data object PASSED : STATUS()
+        }
+
+        fun transfer(transaction: Transaction, status: STATUS)
     }
 
     suspend fun getAccounts(clickListener: AccountsAdapter.ItemClickListener, callback: FetchCallback) {
@@ -53,7 +60,11 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
         listOfAccounts.removeIf { !ratesData.getMapOfRates().containsKey(it.name) }
 
-        val list = listOfAccounts.sortedWith(compareByDescending<Account> { it.amount }.thenBy { it.name })
+        val list = listOfAccounts.sortedWith(
+            compareByDescending<Account> {it.name == ratesData.getBaseCurrency()}
+                .thenByDescending{ it.amount }
+                .thenBy { it.name }
+        )
         list.first().isSelected = true
 
         callback.fetch(ArrayList(list))
@@ -69,9 +80,6 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
     suspend fun transferMoney(amount: Float, to: String, from: String, callback: TransferCallback) {
         val currentBalance = dataStore.data.first().asMap()[floatPreferencesKey(from)] as Float
-        if (amount > currentBalance) {
-            return
-        }
         val rateFrom = ratesData.getMapOfRates()[from]
         val rateTo = ratesData.getMapOfRates()[to]
 
@@ -100,12 +108,17 @@ class MainViewModel @Inject constructor() : ViewModel() {
                 to
             )
 
-            dataStore.edit {
-                it[floatPreferencesKey(from)] = currentBalance - amount
-                it[floatPreferencesKey(to)] = (it[floatPreferencesKey(to)] as Float) + recipientAmount
+            if (exchangeProvider.provideTransaction(transactionSent, currentBalance)) {
+                dataStore.edit {
+                    it[floatPreferencesKey(from)] = currentBalance - amount - (transactionSent.fee ?: 0f)
+                    it[floatPreferencesKey(to)] =
+                        (it[floatPreferencesKey(to)] as Float) + recipientAmount
+                }
+                db.transactionDao().insertAll(transactionSent, transactionReceived)
+                callback.transfer(transactionSent, TransferCallback.STATUS.PASSED)
+            } else {
+                callback.transfer(transactionSent, TransferCallback.STATUS.FAILED(currentBalance))
             }
-            db.transactionDao().insertAll(transactionSent, transactionReceived)
-            callback.transfer(transactionSent)
         }
     }
 

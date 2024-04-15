@@ -11,7 +11,8 @@ data class Transaction(
     val transactionType: TransactionType? = null,
     val amount: Float? = null,
     val fromTo: String? = null,
-    val currentAccount: String? = null
+    val currentAccount: String? = null,
+    var fee: Float? = null
 ) {
     enum class ViewType {
         DATE,

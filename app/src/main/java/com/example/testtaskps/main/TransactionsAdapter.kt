@@ -51,7 +51,7 @@ class TransactionsAdapter (
                     holder.binding.imageTransaction.setImageDrawable(
                         ContextCompat.getDrawable(holder.itemView.context, R.drawable.icon_arrow_income)
                     )
-                    holder.binding.textAmount.text = "+${item.amount.toString()} ${item.currentAccount}"
+                    holder.binding.textAmount.text = "+${item.amount} ${item.currentAccount}"
                     holder.binding.textAmount.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.colorGreen))
                     holder.binding.textStatus.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.colorGreen))
                 }
@@ -61,7 +61,7 @@ class TransactionsAdapter (
                     holder.binding.imageTransaction.setImageDrawable(
                         ContextCompat.getDrawable(holder.itemView.context, R.drawable.icon_arrow_outcome)
                     )
-                    holder.binding.textAmount.text = "-${item.amount.toString()} ${item.currentAccount}"
+                    holder.binding.textAmount.text = "-${(item.amount ?: 0f) + (item.fee ?: 0f)} ${item.currentAccount}"
                     holder.binding.textAmount.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.colorText))
                     holder.binding.textStatus.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.colorText))
                 }
@@ -71,7 +71,7 @@ class TransactionsAdapter (
                     holder.binding.imageTransaction.setImageDrawable(
                         ContextCompat.getDrawable(holder.itemView.context, R.drawable.icon_cross_fail)
                     )
-                    holder.binding.textAmount.text = "${item.amount.toString()} ${item.currentAccount}"
+                    holder.binding.textAmount.text = "${item.amount} ${item.currentAccount}"
                     holder.binding.textAmount.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.colorRed))
                     holder.binding.textStatus.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.colorRed))
                 }

@@ -14,7 +14,7 @@ private const val DATABASE_NAME = "transactions_db"
 
 @Module
 @InstallIn(SingletonComponent::class)
-class RoomModule {
+object RoomModule {
 
     @Singleton
     @Provides
