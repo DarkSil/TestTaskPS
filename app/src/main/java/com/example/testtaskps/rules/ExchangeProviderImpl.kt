@@ -12,7 +12,7 @@ class ExchangeProviderImpl @Inject constructor(
 
     // All the data required to calculate any fee formulas. Feel free to expand
 
-    private val FEE_PERCENT = 7
+    private val FEE_PERCENT = 0.7
     private val FREE_TRANSACTIONS = 5
     private val COUNT_TRANSACTIONS_SEPARATELY = false
 
@@ -39,7 +39,7 @@ class ExchangeProviderImpl @Inject constructor(
     }
 
     override fun calculateFee(amount: Float): Float {
-        return amount * FEE_PERCENT / 100
+        return amount * FEE_PERCENT.toFloat() / 100
     }
 
 }
