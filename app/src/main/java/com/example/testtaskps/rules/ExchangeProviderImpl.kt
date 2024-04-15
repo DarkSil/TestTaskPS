@@ -39,7 +39,7 @@ class ExchangeProviderImpl @Inject constructor(
     }
 
     override fun calculateFee(amount: Float): Float {
-        return amount * FEE_PERCENT.toFloat() / 100
+        return ((amount * FEE_PERCENT.toFloat() / 100) * 100).toInt() / 100f
     }
 
 }

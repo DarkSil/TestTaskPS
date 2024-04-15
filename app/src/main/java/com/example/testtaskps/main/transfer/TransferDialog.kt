@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.testtaskps.R
 import com.example.testtaskps.databinding.DialogTransferBinding
 import com.example.testtaskps.main.MainViewModel
+import com.example.testtaskps.rules.ExchangeProvider
 import com.example.testtaskps.services.model.RatesData
 import com.example.testtaskps.utils.Event
 import com.example.testtaskps.utils.ServiceUtil.launchRefreshService
@@ -33,6 +34,7 @@ class TransferDialog : DialogFragment() {
     private var account: String? = null
 
     @Inject lateinit var ratesData: RatesData
+    @Inject lateinit var exchangeProvider: ExchangeProvider
 
     override fun onStart() {
         super.onStart()
@@ -73,7 +75,18 @@ class TransferDialog : DialogFragment() {
             )
             filters.addAll(binding.amountEditText.filters)
             binding.amountEditText.filters = filters.toTypedArray()
-            binding.amountEditText.addTextChangedListener { binding.amountEditText.error = null }
+
+            val textFee = getString(R.string.totalWithFee)
+            binding.totalText.text = textFee.replace("{amount}", "0 $account")
+            binding.amountEditText.addTextChangedListener {
+                binding.amountEditText.error = null
+                val sum = binding.amountEditText.text.toString().toFloatOrNull() ?: 0f
+                val fee = exchangeProvider.calculateFee(sum)
+                binding.totalText.text = textFee.replace(
+                    "{amount}",
+                    "${sum + fee} $account"
+                )
+            }
 
             val list = ArrayList(ratesData.getMapOfRates().keys)
             list.removeIf { it == account }

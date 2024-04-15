@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginVertical="16dp"
+            android:layout_marginVertical="32dp"
             android:layout_marginHorizontal="24dp">
 
             <TextView
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="32dp">
 
                 <TextView
                     android:layout_width="0dp"
@@ -74,6 +74,18 @@
                 android:backgroundTint="@color/colorBackground"
                 android:textCursorDrawable="@color/colorBackground"
                 android:inputType="numberDecimal"/>
+
+            <TextView
+                android:id="@+id/totalText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:text="@string/totalWithFee"
+                android:fontFamily="@font/nexa_light"
+                android:textColor="@color/colorTextContrast"
+                android:gravity="center"
+                android:layout_marginTop="32dp"
+                android:textFontWeight="800"/>
 
             <TextView
                 android:id="@+id/textTransfer"
