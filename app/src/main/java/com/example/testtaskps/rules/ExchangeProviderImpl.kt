@@ -22,15 +22,19 @@ class ExchangeProviderImpl @Inject constructor(
         return amount <= balance
     }
 
-    override suspend fun calculateFee(transaction: Transaction) : Float {
+    override suspend fun isFeeRequired(account: String): Boolean {
         val count = if (COUNT_TRANSACTIONS_SEPARATELY) {
-            db.transactionDao().getTransactionsCountByName(transaction.currentAccount!!)
+            db.transactionDao().getTransactionsCountByName(account)
         } else {
             db.transactionDao().getTransactionsCount()
         }
 
+        return count >= FREE_TRANSACTIONS
+    }
+
+    override suspend fun calculateFee(transaction: Transaction) : Float {
         var amount = transaction.amount!!
-        if (count >= FREE_TRANSACTIONS) {
+        if (isFeeRequired(transaction.currentAccount!!)) {
             val fee = calculateFee(amount)
             amount += fee
             transaction.fee = fee

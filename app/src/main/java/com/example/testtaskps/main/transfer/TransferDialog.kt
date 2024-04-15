@@ -35,6 +35,7 @@ class TransferDialog : DialogFragment() {
 
     private var callback: MainViewModel.TransferCallback? = null
     private var account: String? = null
+    private var isFeeRequired = false
 
     @Inject lateinit var ratesData: RatesData
     @Inject lateinit var exchangeProvider: ExchangeProvider
@@ -61,6 +62,10 @@ class TransferDialog : DialogFragment() {
 
         account?.let { account ->
 
+            lifecycleScope.launch(Dispatchers.IO) {
+                isFeeRequired = exchangeProvider.isFeeRequired(account)
+            }
+
             var amount = 0f
             var to = ""
 
@@ -86,7 +91,7 @@ class TransferDialog : DialogFragment() {
             binding.amountEditText.addTextChangedListener {
                 binding.amountEditText.error = null
                 val sum = binding.amountEditText.text.toString().toFloatOrNull() ?: 0f
-                val fee = exchangeProvider.calculateFee(sum)
+                val fee = if (isFeeRequired) exchangeProvider.calculateFee(sum) else 0f
                 binding.totalText.text = textFee.replace(
                     "{amount}",
                     "${sum + fee} $account"
