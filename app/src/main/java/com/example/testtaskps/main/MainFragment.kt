@@ -39,6 +39,11 @@ class MainFragment : Fragment() {
         fetchTransactions()
     }
 
+    private val transactionClickListener = TransactionsAdapter.ItemClickListener { account ->
+        binding.recyclerAccounts
+            .smoothScrollToPosition(listOfAccounts.indexOfFirst { it.name == account })
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -59,6 +64,7 @@ class MainFragment : Fragment() {
             stackFromEnd = true
             reverseLayout = true
         }
+        adapterTransactions.setItemClickListener(transactionClickListener)
         binding.recyclerTransactions.adapter = adapterTransactions
 
         lifecycleScope.launch(Dispatchers.IO) {

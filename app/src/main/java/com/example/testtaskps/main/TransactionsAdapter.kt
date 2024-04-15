@@ -17,6 +17,10 @@ class TransactionsAdapter (
     private val list: List<Transaction>
 ) : Adapter<ViewHolder>() {
 
+    fun interface ItemClickListener {
+        fun itemClick(account: String)
+    }
+
     class TransactionViewHolder(val binding: ItemTransactionBinding) : ViewHolder(binding.root)
     class DateViewHolder(val binding: ItemDateBinding) : ViewHolder(binding.root)
 
@@ -46,6 +50,7 @@ class TransactionsAdapter (
         val item = list[position]
         val context = holder.itemView.context
         if (holder is TransactionViewHolder) {
+            holder.binding.root.setOnClickListener { itemClickListener?.itemClick(item.fromTo.toString()) }
             holder.binding.textFee.isVisible = false
             when (item.transactionType) {
                 Transaction.TransactionType.INCOME -> {
@@ -102,4 +107,9 @@ class TransactionsAdapter (
         }
     }
 
+    private var itemClickListener: ItemClickListener? = null
+
+    fun setItemClickListener(itemClickListener: ItemClickListener) {
+        this.itemClickListener = itemClickListener
+    }
 }
