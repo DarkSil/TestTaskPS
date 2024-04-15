@@ -54,7 +54,10 @@ class MainFragment : Fragment() {
         }
         binding.recyclerAccounts.adapter = adapterAccounts
 
-        binding.recyclerTransactions.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerTransactions.layoutManager = LinearLayoutManager(requireContext()).apply {
+            stackFromEnd = true
+            reverseLayout = true
+        }
         binding.recyclerTransactions.adapter = adapterTransactions
 
         lifecycleScope.launch(Dispatchers.IO) {

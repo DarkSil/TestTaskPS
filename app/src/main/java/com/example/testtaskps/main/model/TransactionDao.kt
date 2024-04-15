@@ -7,7 +7,7 @@ import androidx.room.Query
 @Dao
 interface TransactionDao {
 
-    @Query("SELECT * FROM [transaction] WHERE currentAccount = :name")
+    @Query("SELECT * FROM [transaction] WHERE currentAccount = :name ORDER BY date ASC")
     fun getTransactionsByName(name: String): List<Transaction>
 
     @Query("SELECT COUNT(*) FROM [transaction] WHERE transactionType = 'OUTCOME'")
