@@ -37,6 +37,7 @@ class RefreshService : Service() {
     companion object {
         val FORCE_REFRESH_KEY = "force_refresh"
         val LAST_REFRESH_TIME_KEY = longPreferencesKey("lastRefreshTime")
+        var isForced: Boolean = false
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

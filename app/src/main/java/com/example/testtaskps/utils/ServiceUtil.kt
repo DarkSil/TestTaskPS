@@ -9,6 +9,7 @@ object ServiceUtil {
     fun Context.launchRefreshService(isForced: Boolean = false) {
         val intent = Intent(this, RefreshService::class.java)
         if (isForced) {
+            RefreshService.isForced = true
             intent.apply {
                 putExtra(RefreshService.FORCE_REFRESH_KEY, true)
             }

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        android:layout_marginHorizontal="36dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginVertical="16dp"
+            android:layout_marginHorizontal="24dp">
+
+            <TextView
+                android:id="@+id/textTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                tools:text="@string/transferAccount"
+                android:fontFamily="@font/nexa_bold"
+                android:textColor="@color/colorTextContrast"
+                android:gravity="center"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="16sp"
+                    android:text="@string/select_exchange_currency"
+                    android:fontFamily="@font/nexa_light"
+                    android:textColor="@color/colorTextContrast"
+                    android:textFontWeight="800"/>
+
+                <Spinner
+                    android:id="@+id/spinnerCurrencies"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    tools:listitem="@layout/item_spinner" />
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/amountEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:maxLength="10"
+                android:hint="@string/amount_to_exchange"
+                android:textColor="@color/colorTextContrast"
+                android:textColorHint="@android:color/darker_gray"
+                android:fontFamily="@font/nexa_light"
+                android:textFontWeight="800"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:backgroundTint="@color/colorBackground"
+                android:textCursorDrawable="@color/colorBackground"
+                android:inputType="numberDecimal"/>
+
+            <TextView
+                android:id="@+id/textTransfer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="6dp"
+                android:textSize="18sp"
+                android:textAllCaps="true"
+                android:text="@string/transfer_money"
+                android:background="@drawable/background_black_border"
+                android:fontFamily="@font/nexa_bold"
+                android:textColor="@color/colorTextContrast"
+                android:gravity="center"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

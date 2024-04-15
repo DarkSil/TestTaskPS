@@ -1,5 +1,9 @@
 package com.example.testtaskps.utils
 
+/**
+ * Tracks if the previous livedata value was used
+ * to handle forced values only
+ * */
 class Event<T> (value: T) {
 
     var value = value

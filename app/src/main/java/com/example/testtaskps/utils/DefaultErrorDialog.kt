@@ -90,4 +90,12 @@ class DefaultErrorDialog : DialogFragment() {
         this.description = description
         return this
     }
+
+    fun recreate() : DefaultErrorDialog {
+        return DefaultErrorDialog()
+            .setCallback(callback)
+            .setType(type)
+            .setTitle(title)
+            .setDescription(description)
+    }
 }

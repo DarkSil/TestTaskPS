@@ -12,4 +12,9 @@
     <string name="insufficientDescription">Transaction: {amount}\nFee: {fee}\nBalance: {balance}</string>
     <string name="insufficientFunds">Insufficient funds</string>
     <string name="feeText">Fee: {fee}</string>
+    <string name="select_exchange_currency">Select exchange currency:</string>
+    <string name="amount_to_exchange">Amount to exchange</string>
+    <string name="transfer">Transfer</string>
+    <string name="transferAccount">Transfer {account}</string>
+    <string name="fieldNotEmty">Field must be not empty</string>
 </resources>

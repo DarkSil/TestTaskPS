@@ -13,6 +13,7 @@ import com.example.testtaskps.databinding.FragmentMainBinding
 import com.example.testtaskps.main.model.Account
 import com.example.testtaskps.main.model.Transaction
 import com.example.testtaskps.utils.DefaultErrorDialog
+import com.example.testtaskps.utils.DialogUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -72,53 +73,63 @@ class MainFragment : Fragment() {
         }
 
         binding.textTransfer.setOnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                val amount = 100f
-                val from = "EUR"
-                val to = "USD"
-                viewModel.transferMoney(amount, to, from) { transaction, status ->
-                    when (status) {
-                        is MainViewModel.TransferCallback.STATUS.PASSED -> {
-                            launch(Dispatchers.IO) {
-                                viewModel.getAccounts(clickListener) {
-                                    launch(Dispatchers.Main) {
-                                        val size = listOfAccounts.size
-                                        listOfAccounts.clear()
-                                        adapterAccounts.notifyItemRangeRemoved(0, size)
-                                        listOfAccounts.addAll(it)
-                                        adapterAccounts.notifyItemRangeInserted(0, it.size)
-                                    }
-                                }
-                            }
-                            launch(Dispatchers.Main) {
-                                listOfTransactions.add(transaction)
-                                adapterTransactions.notifyItemInserted(listOfTransactions.size-1)
-                            }
-                        }
-                        is MainViewModel.TransferCallback.STATUS.FAILED -> {
-                            val currency = transaction.currentAccount
-                            val description = getString(R.string.insufficientDescription)
-                                .replace(
-                                    "{amount}",
-                                    "${transaction.amount.toString()} $currency"
-                                )
-                                .replace(
-                                    "{fee}",
-                                    "${transaction.fee ?: 0} $currency"
-                                )
-                                .replace(
-                                    "{balance}",
-                                    "${status.balance} $currency"
-                                )
+            DialogUtil.prepareTransferDialog(
+                listOfAccounts.first { it.isSelected }.name
+            ) { transaction, status ->
+                lifecycleScope.launch(Dispatchers.Main) {
+                    handleTransaction(transaction, status)
+                }
+            }
+                .show(parentFragmentManager, null)
+        }
+    }
 
-                            DefaultErrorDialog()
-                                .setTitle(getString(R.string.insufficientFunds))
-                                .setDescription(description)
-                                .setType(DefaultErrorDialog.DialogType.OK)
-                                .show(parentFragmentManager, null)
+    private fun handleTransaction(
+        transaction: Transaction,
+        status: MainViewModel.TransferCallback.STATUS
+    ) {
+        when (status) {
+            is MainViewModel.TransferCallback.STATUS.PASSED -> {
+                with(lifecycleScope) {
+                    launch(Dispatchers.IO) {
+                        viewModel.getAccounts(clickListener) {
+                            launch(Dispatchers.Main) {
+                                val size = listOfAccounts.size
+                                listOfAccounts.clear()
+                                adapterAccounts.notifyItemRangeRemoved(0, size)
+                                listOfAccounts.addAll(it)
+                                adapterAccounts.notifyItemRangeInserted(0, it.size)
+                            }
                         }
                     }
+                    launch(Dispatchers.Main) {
+                        listOfTransactions.add(transaction)
+                        adapterTransactions.notifyItemInserted(listOfTransactions.size - 1)
+                    }
                 }
+            }
+
+            is MainViewModel.TransferCallback.STATUS.FAILED -> {
+                val currency = transaction.currentAccount
+                val description = getString(R.string.insufficientDescription)
+                    .replace(
+                        "{amount}",
+                        "${transaction.amount.toString()} $currency"
+                    )
+                    .replace(
+                        "{fee}",
+                        "${transaction.fee ?: 0} $currency"
+                    )
+                    .replace(
+                        "{balance}",
+                        "${status.balance} $currency"
+                    )
+
+                DefaultErrorDialog()
+                    .setTitle(getString(R.string.insufficientFunds))
+                    .setDescription(description)
+                    .setType(DefaultErrorDialog.DialogType.OK)
+                    .show(parentFragmentManager, null)
             }
         }
     }
