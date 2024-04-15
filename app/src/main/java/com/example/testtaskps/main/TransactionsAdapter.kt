@@ -3,6 +3,7 @@ package com.example.testtaskps.main
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.testtaskps.R
@@ -43,37 +44,56 @@ class TransactionsAdapter (
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = list[position]
+        val context = holder.itemView.context
         if (holder is TransactionViewHolder) {
+            holder.binding.textFee.isVisible = false
             when (item.transactionType) {
                 Transaction.TransactionType.INCOME -> {
-                    holder.binding.textStatus.text =
-                        holder.itemView.context.getString(R.string.received).replace("{item}", item.fromTo.toString())
+                    holder.binding.textStatus.text = context.getString(R.string.received)
+                            .replace("{item}", item.fromTo.toString())
+
                     holder.binding.imageTransaction.setImageDrawable(
-                        ContextCompat.getDrawable(holder.itemView.context, R.drawable.icon_arrow_income)
+                        ContextCompat.getDrawable(context, R.drawable.icon_arrow_income)
                     )
+
                     holder.binding.textAmount.text = "+${item.amount} ${item.currentAccount}"
-                    holder.binding.textAmount.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.colorGreen))
-                    holder.binding.textStatus.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.colorGreen))
+                    holder.binding.textAmount
+                        .setTextColor(ContextCompat.getColor(context, R.color.colorGreen))
+                    holder.binding.textStatus
+                        .setTextColor(ContextCompat.getColor(context, R.color.colorGreen))
                 }
                 Transaction.TransactionType.OUTCOME -> {
                     holder.binding.textStatus.text =
-                        holder.itemView.context.getString(R.string.sent).replace("{item}", item.fromTo.toString())
+                        context.getString(R.string.sent).replace("{item}", item.fromTo.toString())
+
                     holder.binding.imageTransaction.setImageDrawable(
-                        ContextCompat.getDrawable(holder.itemView.context, R.drawable.icon_arrow_outcome)
+                        ContextCompat.getDrawable(context, R.drawable.icon_arrow_outcome)
                     )
-                    holder.binding.textAmount.text = "-${(item.amount ?: 0f) + (item.fee ?: 0f)} ${item.currentAccount}"
-                    holder.binding.textAmount.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.colorText))
-                    holder.binding.textStatus.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.colorText))
+
+                    holder.binding.textFee.isVisible = item.fee != null
+                    holder.binding.textFee.text = context.getString(R.string.feeText)
+                            .replace("{fee}", "${item.fee ?: 0f} ${item.currentAccount}")
+
+                    holder.binding.textAmount.text =
+                        "-${(item.amount ?: 0f) + (item.fee ?: 0f)} ${item.currentAccount}"
+                    holder.binding.textAmount
+                        .setTextColor(ContextCompat.getColor(context, R.color.colorText))
+                    holder.binding.textStatus
+                        .setTextColor(ContextCompat.getColor(context, R.color.colorText))
                 }
                 else -> {
-                    holder.binding.textStatus.text =
-                        holder.itemView.context.getString(R.string.failed).replace("{item}", item.fromTo.toString())
+                    holder.binding.textStatus.text = context.getString(R.string.failed)
+                        .replace("{item}", item.fromTo.toString())
+
                     holder.binding.imageTransaction.setImageDrawable(
-                        ContextCompat.getDrawable(holder.itemView.context, R.drawable.icon_cross_fail)
+                        ContextCompat.getDrawable(context, R.drawable.icon_cross_fail)
                     )
+
                     holder.binding.textAmount.text = "${item.amount} ${item.currentAccount}"
-                    holder.binding.textAmount.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.colorRed))
-                    holder.binding.textStatus.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.colorRed))
+                    holder.binding.textAmount
+                        .setTextColor(ContextCompat.getColor(context, R.color.colorRed))
+                    holder.binding.textStatus
+                        .setTextColor(ContextCompat.getColor(context, R.color.colorRed))
                 }
             }
             holder.binding.textDate.text = getDate(item.date)

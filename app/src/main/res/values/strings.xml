@@ -11,4 +11,5 @@
     <string name="transfer_money">Transfer Money</string>
     <string name="insufficientDescription">Transaction: {amount}\nFee: {fee}\nBalance: {balance}</string>
     <string name="insufficientFunds">Insufficient funds</string>
+    <string name="feeText">Fee: {fee}</string>
 </resources>

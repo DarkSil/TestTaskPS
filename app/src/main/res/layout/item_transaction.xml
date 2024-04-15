@@ -47,13 +47,32 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textAmount"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="+815 USD"
-        android:textColor="@color/colorText"
-        android:fontFamily="@font/nexa_bold"
-        android:textSize="20sp"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/textAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="+815 USD"
+            android:textColor="@color/colorText"
+            android:fontFamily="@font/nexa_bold"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/textFee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="0.7 USD"
+            android:textColor="@color/colorText"
+            android:fontFamily="@font/nexa_light"
+            android:textFontWeight="800"
+            android:textSize="12sp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
 
 </LinearLayout>
